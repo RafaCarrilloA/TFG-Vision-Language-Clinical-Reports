@@ -1,11 +1,15 @@
-# Carpetas de datos y outputs
+# Datos (NO versionar)
 data/
-outputs/
+
+# Modelos pesados
 checkpoints/
 
-# Entornos y archivos temporales de Python/Jupyter
+# Outputs
+outputs/
+
+# Python
 __pycache__/
+*.pyc
+
+# Jupyter
 .ipynb_checkpoints/
-.DS_Store
-.venv/
-.env
