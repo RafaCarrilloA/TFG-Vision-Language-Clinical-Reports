@@ -1,0 +1,11 @@
+Metrica,Valor
+Macro-VDI Media Poblacional,0.8332972852273385
+Desviación Máxima Plasticidad (Max VDI),0.9787234042553191
+Umbral Mínimo Inercia (Min VDI),0.5
+VDI Caso Control Individual,0.9032258064516129
+Magnitud de Señal (Norma L2 Media),41.449737548828125
+Max-Pooling Similitud Bruta,0.9815305471420288
+Max-Pooling Similitud Centrada,-0.0015033106319606304
+Mean-Pooling Similitud Bruta,0.991083025932312
+Mean-Pooling Similitud Centrada,0.0014200287405401468
+Veredicto Arquitectura (Aprobado=1),1.0

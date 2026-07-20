@@ -1,0 +1,5 @@
+Metrica,Valor
+BLEU-4 Promedio Global,0.07822426970719307
+ROUGE-L Promedio Global,0.2676931358075531
+BERTScore F1 Promedio (Absoluto),0.8776869177818298
+Similitud Coseno (SBERT) Promedio,0.6316019296646118
