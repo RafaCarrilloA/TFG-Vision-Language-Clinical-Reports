@@ -11,7 +11,6 @@ Este proyecto implementa un pipeline multimodal avanzado que fusiona visión por
 ---
 
 ## 🏗️ Arquitectura del Sistema: Pipeline de 3 Fases
-
 ### FASE 1: Codificador Visual Clínico (Extractor Espacial)
 **Objetivo:** Construcción de unos cimientos visuales universales y robustos que codifiquen la anatomía radiológica preservando estrictamente la topología espacial, generando el vocabulario base para el modelo generativo.
 
@@ -20,14 +19,26 @@ Este proyecto implementa un pipeline multimodal avanzado que fusiona visión por
 * *Preservación Topológica:* Se extirpa deliberadamente la capa de *Global Average Pooling* extrayendo una **cuadrícula espacial de 10x10** (100 tokens visuales continuos de 1024 canales) capaz de aislar regiones anatómicas concretas.
 * *Blindaje Estadístico:* Aprendizaje multietiqueta en paralelo (14 patologías) combatiendo el desbalanceo extremo (*Long-Tail*) mediante pérdida asimétrica ponderada (BCE + Pos-Weight) y mapeo de incertidumbre clínico (*Soft Targets*).
 
-**Resultados Finales (Macro-AUC Global: 0.741):**
-* **Éxito Geométrico:** Rendimiento de nivel clínico en anomalías macroscópicas (AUC > 0.91 en Derrame Pleural y Edema). 
+**Rendimiento Global y Robustez (Cohorte de Test):**
+El modelo demuestra una alta capacidad de separación estadística global (ROC), manteniendo la robustez estructural frente al desbalanceo masivo de clases sanas, como certifica la curva PR. 
 
-> **Auditoría Visual (Grad-CAM) y Rendimiento:**
-> ![Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_contraste_test.png)
-> ![Curvas ROC](assets/Resultados_Evaluacion/Modulo_1/test/curvas_roc_test_finales.png)
-> *La auditoría visual certifica la ausencia de atajos predictivos (Shortcut Learning), demostrando una focalización exacta sobre la patología real.*
+<div align="center">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_roc_test_finales.png" width="48%" alt="Curva ROC Conjunta Multietiqueta">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_pr_test_finales.png" width="48%" alt="Curva PR Conjunta Multietiqueta">
+</div>
 
+**Rendimiento Neto Clínico (F1-Score):**
+El análisis del F1-Score sobre el Test Set confirma un rendimiento de grado clínico en patologías sólidas y derrames, donde el modelo exhibe su mayor fiabilidad diagnóstica.
+
+<div align="center">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/f1_scores_test.png" width="75%" alt="Gráfico de barras F1-Score">
+</div>
+
+📄 **[Ver tabla completa de métricas clínicas y umbrales (CSV)](assets/Resultados_Evaluacion/Modulo_1/test/metricas_clinicas_test.csv)**
+
+> **Explicabilidad y Auditoría Visual (Grad-CAM):**
+> ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
+> *El mapeo térmico de activación certifica que la DenseNet121 localiza la patología real (ej. Derrame Pleural, Edema, Atelectasia) de forma matemática, evadiendo el "Shortcut Learning" o sesgo de instrumental.*
 ---
 
 ### FASE 2: Ciclo Completo de Alineamiento Geométrico-Generativo (Puente Multimodal)
