@@ -40,22 +40,30 @@ El análisis del F1-Score sobre el Test Set confirma un rendimiento de grado cl�
 > ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
 > *El mapeo térmico de activación certifica que la DenseNet121 localiza la patología real (ej. Derrame Pleural, Edema, Atelectasia) de forma matemática, evadiendo el "Shortcut Learning" o sesgo de instrumental.*
 ---
+### FASE 2: Puente Multimodal y Alineamiento Geométrico (Alineamiento Visual-Lingüístico Pure)
+**Objetivo:** Establecer el nexo de unión entre el extractor visual congelado y el decodificador de lenguaje (BioGPT). Esta fase opera bajo el protocolo de "Alineamiento Puro": el LLM se mantiene estrictamente congelado, y toda la responsabilidad de proyectar la semántica visual hacia el espacio sintáctico del LLM recae en un proyector multimodal (MLP) asistido por inyección de Embeddings Posicionales 2D aprendidos.
 
-### FASE 2: Ciclo Completo de Alineamiento Geométrico-Generativo (Puente Multimodal)
-**Objetivo:** Operar como nexo entre el extractor visual congelado y el decodificador de lenguaje (BioGPT), proyectando la matriz espacial $\mathbb{R}^{100\times1024}$ hacia la sintaxis del modelo base mediante la inyección de *Embeddings* Posicionales 2D ($\mathbf{p}$).
+**Éxito de Ingeniería y Auditoría Matemática (Cohorte Test $N=380$):**
+El diseño del puente multimodal (MLP + LayerNorm + Centrado Dinámico) logró estabilizar perfectamente la matemática de la inyección visual sin saturar la red receptora.
+* **Inmutabilidad del LLM:** $\text{Max-Diff} = 0.00$ (Certificación total de BioGPT congelado).
+* **Estabilidad Energética:** Norma L2 estabilizada en **32.22** (Previene la saturación matemática de la capa Softmax).
+* **Salud del Espacio Latente (Mitigación del "Efecto Cono"):** La similitud coseno centrada se desplomó a un **0.0005**, logrando una dispersión isótropa óptima y destruyendo la anisotropía nativa de los LLMs.
 
-**Dinámica de Optimización y Blindaje Matemático:**
-* **Optimización Híbrida:** Pérdida compuesta $\mathcal{L}_{\text{total}} = \mathcal{L}_{\text{CE}} + \lambda_{\text{geom}}\cdot\mathcal{L}_{\text{geom}}$ ($\lambda=0.4$). Ejecución bajo Precisión Mixta (AMP) y AdamW.
-* **Mitigación del Desbalance Energético:** `LayerNorm` restringe la norma L2 de cada token visual a $\sqrt{1024} = 32.0$, previniendo la muerte del gradiente por saturación.
-* **Destrucción de Anisotropía:** Centrado dinámico de la media ($v-\mu$) para mitigar el *Efecto Cono* de los modelos autorregresivos.
+> **Demostración Geométrica de la Coherencia Espacial:**
+> <div align="center">
+>   <img src="assets/Resultados_Evaluacion/Modulo_2/post_auditoria_topologica_2d.png" width="60%" alt="Matriz de Afinidad Topológica pos_embeddings">
+> </div>
+> 
+> *Esta matriz de afinidad demuestra empíricamente que el modelo ha aprendido una topología bidimensional sobre una secuencia plana. Las bandas paralelas a la diagonal principal confirman correlaciones geométricas (ej. correlación entre el token físico 5 y el 15, o el 25), lo que demuestra que el proyector entiende la anatomía de una radiografía 10x10 sin supervisión explícita.*
 
-**Resultados de la Auditoría Multicliente (Validación $N=380$):**
-* **Estabilidad Energética:** Preservación absoluta del LLM ($\text{Max-Diff} = 0.00$) con norma L2 visual estabilizada en $32.21$.
-* ⚠️ **Confirmación de Ceguera Clínica (Sesgo de Normalidad):** Tasa Macro de Captura Patológica crítica del **6.69%**. El modelo ignora lesiones severas convergiendo en reportes de normalidad genéricos debido a la dominancia del *prior* lingüístico de BioGPT congelado.
+**La Paradoja del "Proyector Puro": Confirmación de la Inercia Lingüística**
+A pesar de la impecable ejecución geométrica y de ingeniería, la evaluación clínica revela una **Tasa Macro de Captura Patológica crítica del 6.69%**. Al estar BioGPT congelado, su fuerte *prior* lingüístico de preentrenamiento domina por completo sobre la señal visual, forzando al modelo a redactar reportes de normalidad genéricos incluso ante lesiones severas.
 
-> **Evolución del Espacio Latente:**
-> ![Auditoría Topológica 2D](assets/Resultados_Evaluacion/Modulo_2/post_auditoria_topologica_2d.png)
-> *Resolución de la Paradoja del Centrado: Dispersión isótropa óptima alcanzada durante la validación dual.*
+> **⚠️ Ejemplo de Alucinación por "Sesgo de Normalidad" (Paciente con fracturas y derrame):**
+> * **[REAL]:** *"Findings: Cardiomediastinal contours are unchanged. There are stable fractures... Pleural effusion..."*
+> * **[GENERADO]:** *"Normal, the heart is in normal site. No cardiomegaly or pleural effusion. Impression: The chest is clear."*
+
+**Veredicto Metodológico:** El alineamiento puro es incapaz de romper la inercia lingüística del LLM. Este descubrimiento empírico valida la hipótesis de la memoria y hace metodológicamente imperativa la transición a la **FASE 3 (Inyección de LoRA)** para intervenir la corteza de atención de BioGPT y recuperar la sensibilidad diagnóstica médica.
 
 ---
 
