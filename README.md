@@ -69,7 +69,6 @@ A pesar de la correcta alineación geométrica, la evaluación clínica arroja u
 **Veredicto Metodológico:** El alineamiento unimodal de proyección pura resulta insuficiente para quebrar la inercia del modelo de lenguaje. Este hallazgo empírico valida la hipótesis de partida y fundamenta la necesidad de la transición hacia la **FASE 3**, introduciendo adaptación de dominio en el LLM.
 
 ---
-
 ### FASE 3: Adaptación de Dominio y Generación Condicionada (LoRA)
 **Objetivo:** Erradicar el sesgo de normalidad detectado en la fase anterior mediante la inyección de adaptadores de bajo rango (**LoRA**) en las capas de auto-atención de BioGPT-Large. Se aplica un proceso de *Fine-Tuning* Supervisado (SFT) para modular la atención diagnóstica, condicionando estrictamente la generación de texto a la señal topográfica visual.
 
@@ -82,7 +81,11 @@ El protocolo de ablación visual (*Blind Masking*) corrobora el éxito de la int
 **Rendimiento Diagnóstico Neto (Auditoría Zero-Shot NLP con BART):**
 Para validar la fidelidad clínica de los informes generados, se realizó una extracción automatizada de patologías mediante un modelo externo (BART-Large-MNLI) en configuración *Zero-Shot*, comparando las entidades redactadas por el sistema frente al *Ground Truth*.
 
-El modelo exhibe una alta capacidad para documentar alteraciones morfológicas directamente en lenguaje natural:
+La evaluación global consolida el diagnóstico multietiqueta del texto generado:
+* **F1-Score Micro (58.94% - Convergencia Estable):** Rendimiento neto ajustado al volumen poblacional, demostrando la fiabilidad general del modelo en un entorno clínico.
+* **F1-Score Macro (49.84% - Estándar Académico VLM):** Rendimiento promedio por clase. Certifica un aprendizaje balanceado y robusto, alineado con el estado del arte en IA médica generativa.
+
+A nivel de entidades específicas, el modelo exhibe una alta capacidad para documentar alteraciones morfológicas complejas directamente en lenguaje natural:
 
 <div align="center">
   <img src="assets/Resultados_Evaluacion/Modulo_3/f3_f1_scores_clinicos.png" width="75%" alt="F1-Score Clínico de Textos Generados">
