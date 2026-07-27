@@ -128,8 +128,9 @@ El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVI
 > El detalle exhaustivo sobre la definición matemática de las pruebas, el diseño de las funciones de pérdida y la implementación algorítmica de cada fase se encuentra documentado de forma interactiva en la carpeta `notebooks/`. Cada cuaderno contiene explicaciones teóricas y comentarios de código diseñados para garantizar la transparencia, facilitar la auditoría del mismo y asegurar la reproducibilidad de los experimentos hechos.
 
 ---
-* 📉 **Auditoría de Entrenamiento:** Los gráficos de convergencia y estabilidad de las funciones de pérdida están disponibles para la **[Fase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)** y la **[Fase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.png)**.
+* 📉 **Auditoría de Entrenamiento (Convergencia):** Los gráficos de estabilidad de las funciones de pérdida (*Loss*) están disponibles para la **[Fase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)**, la **[Fase 2 (Puente Multimodal)](assets/Resultados_Evaluacion/Modulo_2/grafica_convergencia_fase2.png)** y la **[Fase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.png)**.
 
+---
 ## 📂 Recursos y Estructura del Repositorio
 
 🔗 **[Acceso al repositorio de datos en Google Drive (Datasets y Pesos)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
