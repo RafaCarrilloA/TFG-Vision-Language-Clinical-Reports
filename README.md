@@ -29,7 +29,9 @@ El modelo demuestra una alta capacidad de separación estadística global, mante
 </div>
 
 **Rendimiento Neto Clínico (F1-Score):**
-El análisis sobre el conjunto de prueba confirma un rendimiento de grado clínico, exhibiendo su mayor fiabilidad diagnóstica en patologías parenquimatosas sólidas y derrames.
+El análisis sobre el conjunto de prueba confirma un rendimiento de grado clínico, exhibiendo su mayor fiabilidad diagnóstica en patologías parenquimatosas sólidas y derrames. 
+
+> ⚠️ **Nota Metodológica sobre Desbalanceo Extremo (Long-Tail):** Las clases *Fracture* y *Lung Lesion* registran un F1-Score de 0.000, pero por motivos estadísticos distintos inherentes a la distribución natural del *dataset*. En *Fracture*, existe una ausencia neta de casos positivos en esta partición de test (soporte estadístico nulo), inhabilitando el cálculo de la métrica (PR AUC = N/A). En *Lung Lesion*, aunque existe soporte clínico residual, su prevalencia es tan ínfima que la red no dispone de densidad de datos suficiente para generalizar sus patrones morfológicos, resultando en una sensibilidad nula frente a la clase mayoritaria sana.
 
 <div align="center">
   <img src="assets/Resultados_Evaluacion/Modulo_1/test/f1_scores_test.png" width="75%" alt="Gráfico de barras F1-Score">
@@ -44,8 +46,6 @@ El análisis sobre el conjunto de prueba confirma un rendimiento de grado clíni
 >
 > 🔍 **Auditoría Exhaustiva (14 Patologías):** Para garantizar la interpretabilidad y seguridad del modelo, se ha generado una validación visual completa evaluando el foco de atención topológico de la red frente a todas las etiquetas clínicas del dataset.
 > * 📄 **[Ver Matriz Grad-CAM Completa (14 Patologías)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_completa.png)**
-> * 📄 **[Ver Matriz de Contraste Diagnóstico (Casos Críticos)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_contraste_test.png)**
-
 ---
 
 ### FASE 2: Puente Multimodal y Alineamiento Geométrico
@@ -82,6 +82,8 @@ El protocolo de ablación visual (*Blind Masking*) corrobora el éxito de la int
 
 * **Índice de Dependencia Visual (VDI Macro): 0.8333.** Este umbral confirma que el sistema fundamenta más del 83% de su inferencia semántica en la radiografía de entrada.
 * **Calidad Semántica Contextual:** Se obtiene un BERTScore F1 de **0.8777** (Escala Absoluta), asegurando una sintaxis fluida y consistente con la terminología clínica humana.
+
+📄 **[Consultar tabla de métricas de Lenguaje Natural (BLEU, ROUGE, BERTScore)](assets/Resultados_Evaluacion/Modulo_3/metricas_generacion_nlg.csv)**
 
 **Rendimiento Diagnóstico Neto (Auditoría Zero-Shot NLP con BART):**
 Para validar la fidelidad clínica de los informes generados, se realizó una extracción automatizada de patologías mediante un modelo externo (BART-Large-MNLI) en configuración *Zero-Shot*, comparando las entidades redactadas por el sistema frente al *Ground Truth*.
@@ -126,6 +128,8 @@ El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVI
 > El detalle exhaustivo sobre la definición matemática de las pruebas, el diseño de las funciones de pérdida y la implementación algorítmica de cada fase se encuentra documentado de forma interactiva en la carpeta `notebooks/`. Cada cuaderno contiene explicaciones teóricas y comentarios de código diseñados para garantizar la transparencia, facilitar la auditoría del mismo y asegurar la reproducibilidad de los experimentos hechos.
 
 ---
+* 📉 **Auditoría de Entrenamiento:** Los gráficos de convergencia y estabilidad de las funciones de pérdida están disponibles para la **[Fase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)** y la **[Fase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.png)**.
+
 ## 📂 Recursos y Estructura del Repositorio
 
 🔗 **[Acceso al repositorio de datos en Google Drive (Datasets y Pesos)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
