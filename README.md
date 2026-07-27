@@ -37,9 +37,14 @@ El análisis sobre el conjunto de prueba confirma un rendimiento de grado clíni
 
 📄 **[Consultar tabla completa de métricas clínicas y umbrales (CSV)](assets/Resultados_Evaluacion/Modulo_1/test/metricas_clinicas_test.csv)**
 
-> **Explicabilidad y Auditoría Visual (Grad-CAM):**
+> **Explicabilidad Clínica y Auditoría Visual (Grad-CAM):**
 > ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
-> *El mapeo térmico de activación certifica que la red localiza la patología anatómica real (ej. Derrame Pleural, Edema, Atelectasia) de forma matemática, evadiendo correlaciones espurias o sesgos instrumentales (Shortcut Learning).*
+> 
+> *El mapeo térmico de activación (imagen superior) certifica empíricamente que la red convolucional fundamenta su diagnóstico en las coordenadas anatómicas correctas (ej. bases pulmonares para Derrames, parénquima para Edemas), evadiendo correlaciones espurias o el aprendizaje de atajos visuales instrumentales (Shortcut Learning).*
+>
+> 🔍 **Auditoría Exhaustiva (14 Patologías):** Para garantizar la interpretabilidad y seguridad del modelo, se ha generado una validación visual completa evaluando el foco de atención topológico de la red frente a todas las etiquetas clínicas del dataset.
+> * 📄 **[Ver Matriz Grad-CAM Completa (14 Patologías)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_completa.png)**
+> * 📄 **[Ver Matriz de Contraste Diagnóstico (Casos Críticos)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_contraste_test.png)**
 
 ---
 
@@ -57,7 +62,7 @@ El diseño del puente multimodal (MLP + LayerNorm + Centrado Dinámico) logra es
 >   <img src="assets/Resultados_Evaluacion/Modulo_2/post_auditoria_topologica_2d.png" width="60%" alt="Matriz de Afinidad Topológica pos_embeddings">
 > </div>
 > 
-> *La matriz de afinidad evidencia empíricamente el aprendizaje de una topología bidimensional sobre una secuencia plana. Las bandas paralelas a la diagonal principal reflejan correlaciones geométricas consistentes, demostrando que el proyector interioriza la estructura anatómica de la radiografía sin supervisión espacial explícita.*
+> *La matriz de afinidad evidencia empíricamente cómo el modelo logra reconstruir la topología bidimensional (2D) a partir de una secuencia plana (1D). Dado que la radiografía se procesa como una cuadrícula de 10x10, la aparición de franjas paralelas a la diagonal principal con un "salto" exacto de 10 posiciones demuestra matemáticamente que la red ha descubierto el eje vertical (las relaciones de "arriba" y "abajo"). De este modo, el proyector interioriza la estructura anatómica sin necesidad de supervisión espacial explícita. Además, la fuerte intensidad geométrica en la mitad inicial de la matriz (tokens 0-50) refleja que el modelo ancla sus coordenadas en las estructuras rígidas del tórax superior y medio (tráquea, clavículas, arco aórtico), relajando la restricción espacial hacia las bases pulmonares y el diafragma, donde la variabilidad anatómica es mayor.*
 
 **Análisis de Inercia Lingüística y "Ceguera Clínica":**
 A pesar de la correcta alineación geométrica, la evaluación clínica arroja una **Tasa Macro de Captura Patológica crítica del 6.69%**. La conservación inmutable de BioGPT provoca que su fuerte sesgo lingüístico (*prior* de normalidad) eclipse la señal visual, resultando en la generación de informes genéricos de normalidad incluso ante evidencias de lesiones severas.
@@ -94,7 +99,11 @@ A nivel de entidades específicas, el modelo exhibe una alta capacidad para docu
 *Se observan resultados sobresalientes en patologías de alta relevancia clínica como la **Opacidad Pulmonar (F1: 0.7894)**, la **Consolidación (F1: 0.7303)** y la **Atelectasia (F1: 0.6779)**.*
 
 **Auditoría Epidemiológica (Distribución Observada vs. Generada):**
-El contraste de soporte demuestra la superación del colapso de inferencia (tendencia a predecir "Estudio Normal"). El modelo aproxima con gran precisión la distribución multietiqueta real presente en la cohorte clínica.
+Esta auditoría visualiza el volumen total de diagnósticos por cada categoría patológica. En la gráfica adjunta, cada par de barras compara la prevalencia real frente a la predicción del modelo:
+* **Barra Real (Ground Truth):** Representa la cantidad exacta de pacientes que realmente padecen esa patología en la cohorte de prueba, según el diagnóstico médico original.
+* **Barra IA (Generada):** Representa la cantidad de casos que el modelo de lenguaje ha detectado y redactado proactivamente en sus informes.
+
+El contraste equilibrado entre ambas barras demuestra la superación definitiva del colapso de inferencia sufrido en la Fase 2 (donde la IA predecía "Estudio Normal" por defecto debido a la inercia del texto). El modelo ahora aproxima con gran precisión la distribución multietiqueta del mundo real, confirmando que redacta de forma proporcional a la evidencia clínica y no por sesgo estadístico.
 
 <div align="center">
   <img src="assets/Resultados_Evaluacion/Modulo_3/f3_distribucion_casos.png" width="75%" alt="Distribución Real vs IA">
@@ -107,13 +116,14 @@ El contraste de soporte demuestra la superación del colapso de inferencia (tend
 
 El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVIDIA CUDA), optimizando el uso de VRAM mediante Precisión Mixta Automática (AMP) y acumulación de gradientes.
 
-* **Deep Learning Framework:** PyTorch & PyTorch Lightning
+* **Deep Learning Framework:** PyTorch & PyTorch Lightning.
 * **Preprocesamiento Clínico y Visión:** MONAI (Medical Open Network for AI) para transformaciones de grado médico, y TorchVision (DenseNet121).
 * **Procesamiento de Lenguaje (NLP):** HuggingFace Transformers (BioGPT, BART, SBERT).
 * **Métricas y Evaluación:** Scikit-Learn, Evaluate, BERTScore.
 * **Manipulación de Datos:** Pandas, NumPy, OpenCV.
 
-Los cuadernos de la carpeta `notebooks/` están diseñados para ser autoejecutables en entornos como Google Colab o servidores Jupyter locales, enlazando dinámicamente con las rutas externas para la carga pesada de tensores y *datasets*.
+> **💡 Documentación Metodológica y Código Fuente:**
+> El detalle exhaustivo sobre la definición matemática de las pruebas, el diseño de las funciones de pérdida y la implementación algorítmica de cada fase se encuentra documentado de forma interactiva en la carpeta `notebooks/`. Cada cuaderno contiene explicaciones teóricas y comentarios de código diseñados para garantizar la transparencia, facilitar la auditoría del mismo y asegurar la reproducibilidad de los experimentos hechos.
 
 ---
 ## 📂 Recursos y Estructura del Repositorio
@@ -123,9 +133,9 @@ Los cuadernos de la carpeta `notebooks/` están diseñados para ser autoejecutab
 ```text
 TFG-Vision-Language-Clinical-Reports/
 ├── notebooks/       # Implementación base y experimentación
-│   ├── Fase_1_DenseNet.ipynb  # Entrenamiento del extractor visual y métricas
-│   ├── Fase_2_Alineamiento.ipynb # Proyector MLP, centrado dinámico y matriz topológica
-│   └── Fase_3_LoRA_Generacion.ipynb # Inyección LoRA y auditoría Zero-Shot BART
+│   ├── Modulo_I_Vision.ipynb  # Entrenamiento del extractor visual y métricas
+│   ├── Modulo_II_Puente_Texto.ipynb # Proyector MLP, centrado dinámico y matriz topológica y fase 3, Inyección LoRA en BioGPT y auditoría Zero-Shot BART
+│
 ├── assets/          # Repositorio de recursos gráficos
 │   ├── Resultados_EDA/         
 │   │   └── graficas_distribucion.png # Histogramas de prevalencia (CheXpert & Indiana)
