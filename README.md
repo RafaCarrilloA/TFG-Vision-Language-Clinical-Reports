@@ -133,22 +133,28 @@ El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVI
 ---
 ## 📂 Recursos y Estructura del Repositorio
 
-🔗 **[Acceso al repositorio de datos en Google Drive (Datasets y Pesos)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
+> **⚙️ Estrategia de Ingesta de Datos (Data Ops):**
+> Por buenas prácticas de Ingeniería de Software, los corpus clínicos masivos (imágenes radiológicas) y los tensores de pesos pesados (`.pth`) **no** se incluyen en el control de versiones de GitHub. 
+> El *pipeline* está diseñado para montar dinámicamente un volumen en tiempo de ejecución, extrayendo los datos en un entorno SSD local temporal para maximizar el ancho de banda I/O durante el entrenamiento.
+
+🔗 **[Acceso al Volumen Externo en Google Drive (Datasets, Pesos y Logs)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
 
 ```text
 TFG-Vision-Language-Clinical-Reports/
-├── notebooks/       # Implementación base y experimentación
-│   ├── Modulo_I_Vision.ipynb  # Entrenamiento del extractor visual y métricas
-│   ├── Modulo_II_Puente_Texto.ipynb # Proyector MLP, centrado dinámico y matriz topológica y fase 3, Inyección LoRA en BioGPT y auditoría Zero-Shot BART
+├── notebooks/       # Implementación base, código fuente y experimentación
+│   ├── Modulo_I_Vision.ipynb        # Fase 1: Entrenamiento del extractor visual (CNN) y métricas
+│   └── Modulo_II_Puente_Texto.ipynb # Fases 2 y 3: Proyector MLP, inyección LoRA en BioGPT y auditoría Zero-Shot
 │
-├── assets/          # Repositorio de recursos gráficos
-│   ├── Resultados_EDA/         
-│   │   └── graficas_distribucion.png # Histogramas de prevalencia (CheXpert & Indiana)
-│   └── Resultados_Evaluacion/  
-│       ├── Modulo_1/ # Curvas ROC/PR multietiqueta y mapas de calor Grad-CAM
-│       ├── Modulo_2/ # Matriz de afinidad espacial (Demostración de topología 2D)
-│       └── Modulo_3/ # Gráficas de rendimiento clínico (F1 BART) y distribución final
-├── checkpoints/     # (Ignorado en Git) Directorio de destino para pesos del modelo
-├── data/            # (Ignorado en Git) Montaje dinámico SSD para extracción de datasets
-├── outputs/         # (Ignorado en Git) Registros de ejecución locales
+├── assets/          # Repositorio integral de recursos gráficos, métricas y auditorías
+│   ├── Resultados_EDA/              # Análisis Exploratorio de Datos (EDA) exhaustivo
+│   │   ├── Modulo_1/                # Demografía, fotometría, control de calidad y correlación de patologías
+│   │   └── Modulo_2_3_Indiana/      # Inspección bimodal clínica, completitud del corpus y Bigramas (NLP)
+│   └── Resultados_Evaluacion/       # Pruebas empíricas y validación algorítmica de las 3 fases
+│       ├── Modulo_1/                # [Fase 1] Curvas ROC/PR individuales, matrices de confusión y Grad-CAM (14 clases)
+│       ├── Modulo_2/                # [Fase 2] Convergencia del puente y demostración matemática de topología 2D
+│       └── Modulo_3/                # [Fase 3] Métricas NLP (BERTScore), autopsias de contraste y CSVs de evaluación
+│
+├── checkpoints/     # (Ignorado en Git -> Accesible vía enlace Drive) Pesos del modelo
+├── data/            # (Ignorado en Git -> Accesible vía enlace Drive) Montaje dinámico SSD
+├── outputs/         # (Ignorado en Git -> Accesible vía enlace Drive) Registros de ejecución locales
 └── README.md        # Documentación arquitectónica e índice del proyecto
