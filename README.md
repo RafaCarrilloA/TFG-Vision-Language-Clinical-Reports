@@ -103,18 +103,37 @@ El contraste de soporte demuestra la superación del colapso de inferencia (tend
 📄 **[Consultar reporte detallado de validación clínica cruzada (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
 
 ---
+## 🛠️ Stack Tecnológico y Reproducibilidad
 
+El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVIDIA CUDA), optimizando el uso de VRAM mediante Precisión Mixta Automática (AMP) y acumulación de gradientes.
+
+* **Deep Learning Framework:** PyTorch & PyTorch Lightning
+* **Preprocesamiento Clínico y Visión:** MONAI (Medical Open Network for AI) para transformaciones de grado médico, y TorchVision (DenseNet121).
+* **Procesamiento de Lenguaje (NLP):** HuggingFace Transformers (BioGPT, BART, SBERT).
+* **Métricas y Evaluación:** Scikit-Learn, Evaluate, BERTScore.
+* **Manipulación de Datos:** Pandas, NumPy, OpenCV.
+
+Los cuadernos de la carpeta `notebooks/` están diseñados para ser autoejecutables en entornos como Google Colab o servidores Jupyter locales, enlazando dinámicamente con las rutas externas para la carga pesada de tensores y *datasets*.
+
+---
 ## 📂 Recursos y Estructura del Repositorio
 
-🔗 **[Acceso al repositorio de datos en Google Drive (Datasets, Pesos y Logs)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
+🔗 **[Acceso al repositorio de datos en Google Drive (Datasets y Pesos)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
 
 ```text
 TFG-Vision-Language-Clinical-Reports/
-├── notebooks/       # Implementación base: Cuadernos modulares ejecutables (Fases 1, 2 y 3)
+├── notebooks/       # Implementación base y experimentación
+│   ├── Fase_1_DenseNet.ipynb  # Entrenamiento del extractor visual y métricas
+│   ├── Fase_2_Alineamiento.ipynb # Proyector MLP, centrado dinámico y matriz topológica
+│   └── Fase_3_LoRA_Generacion.ipynb # Inyección LoRA y auditoría Zero-Shot BART
 ├── assets/          # Repositorio de recursos gráficos
-│   ├── Resultados_EDA/         # Visualizaciones del análisis exploratorio (CheXpert & Indiana)
-│   └── Resultados_Evaluacion/  # Curvas de rendimiento, matrices y análisis XAI
-├── checkpoints/     # [Drive] Pesos del modelo entrenado (.pth) y tensores adaptadores LoRA
-├── data/            # [Drive] Entorno SSD para ingesta de datasets clínicos estructurados
-├── outputs/         # [Drive] Registros de ejecución y logs de entrenamiento en crudo
+│   ├── Resultados_EDA/         
+│   │   └── graficas_distribucion.png # Histogramas de prevalencia (CheXpert & Indiana)
+│   └── Resultados_Evaluacion/  
+│       ├── Modulo_1/ # Curvas ROC/PR multietiqueta y mapas de calor Grad-CAM
+│       ├── Modulo_2/ # Matriz de afinidad espacial (Demostración de topología 2D)
+│       └── Modulo_3/ # Gráficas de rendimiento clínico (F1 BART) y distribución final
+├── checkpoints/     # (Ignorado en Git) Directorio de destino para pesos del modelo
+├── data/            # (Ignorado en Git) Montaje dinámico SSD para extracción de datasets
+├── outputs/         # (Ignorado en Git) Registros de ejecución locales
 └── README.md        # Documentación arquitectónica e índice del proyecto
