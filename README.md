@@ -10,21 +10,6 @@ La presente memoria detalla el diseño, desarrollo y evaluación empírica de un
 
 ---
 
-## 🚀 Demostración End-to-End: Flujo de Inferencia y Explicabilidad Visual
-
-En esta sección consolidamos el *pipeline* completo de nuestro Modelo Visión-Lenguaje (VLM) en una única ejecución visual. Para asegurar que la demostración ilustra perfectamente el potencial del sistema, el flujo realiza los siguientes pasos:
-
-1. **Búsqueda de Verdadero Positivo:** Aislamiento de un caso patológico real (Cardiomegalia) donde el modelo acierta el diagnóstico de forma precisa, validando su fiabilidad clínica.
-2. **Preprocesamiento y Extracción Grad-CAM (Módulo 1):** Tras aplicar el recorte seguro (*SafeCrop*) y padding de MONAI, se interceptan las activaciones espaciales del extractor visual (`denseblock4` de DenseNet121) para calcular el mapa térmico de atención.
-3. **Inferencia Autorregresiva (Módulos 2 y 3):** Los tokens visuales se alinean mediante el proyector MLP, permitiendo que BioGPT + LoRA redacte el informe clínico final condicionado a la imagen.
-
-<div align="center">
-  <!-- Asegúrate de que la ruta de la imagen coincida con donde la guardes en tu carpeta assets -->
-  <img src="assets/Resultados_Evaluacion/Modulo_3/demo_pipeline_tech_uid_2.png" width="100%" alt="Flujo de Inferencia End-to-End">
-</div>
-
----
-
 ## 🏗️ Arquitectura del Sistema: Pipeline de 3 Fases
 
 ### FASE 1: Codificador Visual Clínico (Extracción de Características Espaciales)
@@ -127,6 +112,21 @@ El contraste equilibrado entre ambas barras demuestra la superación definitiva 
 </div>
 
 📄 **[Consultar reporte detallado de validación clínica cruzada (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
+
+---
+## 🚀 Demostración End-to-End: Flujo de Inferencia y Explicabilidad Visual
+
+En esta sección consolidamos el *pipeline* completo de nuestro Modelo Visión-Lenguaje (VLM) en una única ejecución visual. Para asegurar que la demostración ilustra perfectamente el potencial del sistema, el flujo realiza los siguientes pasos:
+
+1. **Búsqueda de Verdadero Positivo:** Aislamiento de un caso patológico real (Cardiomegalia) donde el modelo acierta el diagnóstico de forma precisa, validando su fiabilidad clínica.
+2. **Preprocesamiento y Extracción Grad-CAM (Módulo 1):** Tras aplicar el recorte seguro (*SafeCrop*) y padding de MONAI, se interceptan las activaciones espaciales del extractor visual (`denseblock4` de DenseNet121) para calcular el mapa térmico de atención.
+3. **Inferencia Autorregresiva (Módulos 2 y 3):** Los tokens visuales se alinean mediante el proyector MLP, permitiendo que BioGPT + LoRA redacte el informe clínico final condicionado a la imagen.
+
+<div align="center">
+  <!-- Asegúrate de que la ruta de la imagen coincida con donde la guardes en tu carpeta assets -->
+  <img src="assets/Resultados_Evaluacion/Modulo_3/demo_pipeline_tech_uid_2.png" width="100%" alt="Flujo de Inferencia End-to-End">
+</div>
+
 
 ---
 ## 🛠️ Stack Tecnológico y Reproducibilidad
