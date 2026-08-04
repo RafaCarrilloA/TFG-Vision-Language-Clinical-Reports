@@ -72,8 +72,6 @@ A pesar de la correcta alineación geométrica, la evaluación clínica arroja u
 > * **[TEXTO GENERADO]:** *"Normal, the heart is in normal site. No cardiomegaly or pleural effusion. Impression: The chest is clear."*
 
 **Veredicto Metodológico:** El alineamiento unimodal de proyección pura resulta insuficiente para quebrar la inercia del modelo de lenguaje. Este hallazgo empírico valida la hipótesis de partida y fundamenta la necesidad de la transición hacia la **FASE 3**, introduciendo adaptación de dominio en el LLM.
-
----
 ### FASE 3: Adaptación de Dominio y Generación Condicionada (LoRA)
 **Objetivo:** Erradicar el sesgo de normalidad detectado en la fase anterior mediante la inyección de adaptadores de bajo rango (**LoRA**) en las capas de auto-atención de BioGPT-Large. Se aplica un proceso de *Fine-Tuning* Supervisado (SFT) para modular la atención diagnóstica, condicionando estrictamente la generación de texto a la señal topográfica visual.
 
@@ -81,7 +79,7 @@ A pesar de la correcta alineación geométrica, la evaluación clínica arroja u
 El protocolo de ablación visual (*Blind Masking*) corrobora el éxito de la intervención algorítmica, evidenciando la transición de un modelo lingüísticamente inercial a uno dependiente del estímulo visual.
 
 * **Índice de Dependencia Visual (VDI Macro): 0.8333.** Este umbral confirma que el sistema fundamenta más del 83% de su inferencia semántica en la radiografía de entrada.
-* **Calidad Semántica Contextual:** Se obtiene un BERTScore F1 de **0.8777** (Escala Absoluta), asegurando una sintaxis fluida y consistente con la terminología clínica humana.
+* **Calidad Semántica Contextual:** Se obtiene un BERTScore F1 de **0.8774** (Escala Absoluta), asegurando una sintaxis fluida y consistente con la terminología clínica humana.
 
 📄 **[Consultar tabla de métricas de Lenguaje Natural (BLEU, ROUGE, BERTScore)](assets/Resultados_Evaluacion/Modulo_3/metricas_generacion_nlg.csv)**
 
@@ -89,16 +87,16 @@ El protocolo de ablación visual (*Blind Masking*) corrobora el éxito de la int
 Para validar la fidelidad clínica de los informes generados, se realizó una extracción automatizada de patologías mediante un modelo externo (BART-Large-MNLI) en configuración *Zero-Shot*, comparando las entidades redactadas por el sistema frente al *Ground Truth*.
 
 La evaluación global consolida el diagnóstico multietiqueta del texto generado:
-* **F1-Score Micro (58.94% - Convergencia Estable):** Rendimiento neto ajustado al volumen poblacional, demostrando la fiabilidad general del modelo en un entorno clínico.
-* **F1-Score Macro (49.84% - Estándar Académico VLM):** Rendimiento promedio por clase. Certifica un aprendizaje balanceado y robusto, alineado con el estado del arte en IA médica generativa.
+* **F1-Score Micro (60.03% - Convergencia Estable):** Rendimiento neto ajustado al volumen poblacional, demostrando la fiabilidad general del modelo en un entorno clínico.
+* **F1-Score Macro (51.45% - Estándar Académico VLM):** Rendimiento promedio por clase. Certifica un aprendizaje balanceado y robusto, alineado con el estado del arte en IA médica generativa.
 
 A nivel de entidades específicas, el modelo exhibe una alta capacidad para documentar alteraciones morfológicas complejas directamente en lenguaje natural:
 
 <div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_3/f3_f1_scores_clinicos.png" width="75%" alt="F1-Score Clínico de Textos Generados">
+  <img src="assets/Resultados_Evaluacion/Modulo_3/f3_distribucion_casos_nucleus.png" width="75%" alt="F1-Score Clínico de Textos Generados">
 </div>
 
-*Se observan resultados sobresalientes en patologías de alta relevancia clínica como la **Opacidad Pulmonar (F1: 0.7894)**, la **Consolidación (F1: 0.7303)** y la **Atelectasia (F1: 0.6779)**.*
+*Se observan resultados sobresalientes en patologías de alta relevancia clínica como la **Opacidad Pulmonar (F1: 0.7617)**, la **Consolidación (F1: 0.7286)** y la **Atelectasia (F1: 0.7151)**.*
 
 **Auditoría Epidemiológica (Distribución Observada vs. Generada):**
 Esta auditoría visualiza el volumen total de diagnósticos por cada categoría patológica. En la gráfica adjunta, cada par de barras compara la prevalencia real frente a la predicción del modelo:
@@ -108,25 +106,10 @@ Esta auditoría visualiza el volumen total de diagnósticos por cada categoría 
 El contraste equilibrado entre ambas barras demuestra la superación definitiva del colapso de inferencia sufrido en la Fase 2 (donde la IA predecía "Estudio Normal" por defecto debido a la inercia del texto). El modelo ahora aproxima con gran precisión la distribución multietiqueta del mundo real, confirmando que redacta de forma proporcional a la evidencia clínica y no por sesgo estadístico.
 
 <div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_3/f3_distribucion_casos.png" width="75%" alt="Distribución Real vs IA">
+  <img src="assets/Resultados_Evaluacion/Modulo_3/resultados_auditoria_F1_BART_fase3.png" width="75%" alt="Distribución Real vs IA">
 </div>
 
 📄 **[Consultar reporte detallado de validación clínica cruzada (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
-
----
-## 🚀 Demostración End-to-End: Flujo de Inferencia y Explicabilidad Visual
-
-En esta sección consolidamos el *pipeline* completo de nuestro Modelo Visión-Lenguaje (VLM) en una única ejecución visual. Para asegurar que la demostración ilustra perfectamente el potencial del sistema, el flujo realiza los siguientes pasos:
-
-1. **Búsqueda de Verdadero Positivo:** Aislamiento de un caso patológico real (Cardiomegalia) donde el modelo acierta el diagnóstico de forma precisa, validando su fiabilidad clínica.
-2. **Preprocesamiento y Extracción Grad-CAM (Módulo 1):** Tras aplicar el recorte seguro (*SafeCrop*) y padding de MONAI, se interceptan las activaciones espaciales del extractor visual (`denseblock4` de DenseNet121) para calcular el mapa térmico de atención.
-3. **Inferencia Autorregresiva (Módulos 2 y 3):** Los tokens visuales se alinean mediante el proyector MLP, permitiendo que BioGPT + LoRA redacte el informe clínico final condicionado a la imagen.
-
-<div align="center">
-  <!-- Asegúrate de que la ruta de la imagen coincida con donde la guardes en tu carpeta assets -->
-  <img src="assets/Resultados_Evaluacion/Modulo_3/demo_pipeline_tech_uid_2.png" width="100%" alt="Flujo de Inferencia End-to-End">
-</div>
-
 
 ---
 ## 🛠️ Stack Tecnológico y Reproducibilidad
