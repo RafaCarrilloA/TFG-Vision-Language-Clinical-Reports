@@ -105,10 +105,6 @@ Esta auditoría visualiza el volumen total de diagnósticos por cada categoría 
 
 El contraste equilibrado entre ambas barras demuestra la superación definitiva del colapso de inferencia sufrido en la Fase 2 (donde la IA predecía "Estudio Normal" por defecto debido a la inercia del texto). El modelo ahora aproxima con gran precisión la distribución multietiqueta del mundo real, confirmando que redacta de forma proporcional a la evidencia clínica y no por sesgo estadístico.
 
-<div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_3/resultados_auditoria_F1_BART_fase3.png" width="75%" alt="Distribución Real vs IA">
-</div>
-
 📄 **[Consultar reporte detallado de validación clínica cruzada (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
 
 ---
