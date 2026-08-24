@@ -2,7 +2,6 @@
 
 **Proyecto de Fin de Grado en Ingeniería Informática (ETSIIT - Universidad de Granada)**  
 **Autor:** Rafael Carrillo Arroyo
-📄 **[Leer Memoria Completa del Proyecto (PDF)](assets/Memoria_TFG.pdf)**
 ---
 
 ## 📋 Resumen Ejecutivo
@@ -135,13 +134,14 @@ El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVI
 > Por buenas prácticas de Ingeniería de Software, los corpus clínicos masivos (imágenes radiológicas) y los tensores de pesos pesados (`.pth`) **no** se incluyen en el control de versiones de GitHub.
 
 🔗 **[Acceso al Volumen Externo en Google Drive (Datasets, Pesos y Logs)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
+
+```text
 TFG-Vision-Language-Clinical-Reports/
 ├── notebooks/       # Implementación base, código fuente y experimentación
 │   ├── Modulo_I_Vision.ipynb        # Fase 1: Entrenamiento del extractor visual (CNN) y métricas
 │   └── Modulo_II_Puente_Texto.ipynb # Fases 2 y 3: Proyector MLP, inyección LoRA en BioGPT y auditoría Zero-Shot
 │
 ├── assets/          # Repositorio integral de recursos gráficos, métricas y auditorías
-│   ├── Memoria_TFG.pdf              # 📄 Documento completo de la memoria del Trabajo de Fin de Grado
 │   ├── Resultados_EDA/              # Análisis Exploratorio de Datos (EDA) exhaustivo
 │   │   ├── Modulo_1/                # Demografía, fotometría, control de calidad y correlación de patologías
 │   │   └── Modulo_2_3_Indiana/      # Inspección bimodal clínica, completitud del corpus y Bigramas (NLP)
