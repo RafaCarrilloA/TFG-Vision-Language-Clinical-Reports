@@ -2,7 +2,7 @@
 
 **Proyecto de Fin de Grado en Ingeniería Informática (ETSIIT - Universidad de Granada)**  
 **Autor:** Rafael Carrillo Arroyo
-
+📄 **[Leer Memoria Completa del Proyecto (PDF)](assets/proyecto.pdf)**
 ---
 
 ## 📋 Resumen Ejecutivo
