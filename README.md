@@ -40,9 +40,12 @@ El análisis sobre el conjunto de prueba confirma un rendimiento de grado clíni
 📄 **[Consultar tabla completa de métricas clínicas y umbrales (CSV)](assets/Resultados_Evaluacion/Modulo_1/test/metricas_clinicas_test.csv)**
 
 > **Explicabilidad Clínica y Auditoría Visual (Grad-CAM):**
-> ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
 > 
-> *El mapeo térmico de activación (imagen superior) certifica empíricamente que la red convolucional fundamenta su diagnóstico en las coordenadas anatómicas correctas (ej. bases pulmonares para Derrames, parénquima para Edemas), evadiendo correlaciones espurias o el aprendizaje de atajos visuales instrumentales (Shortcut Learning).*
+> Para certificar empíricamente que la red convolucional fundamenta su diagnóstico en las coordenadas anatómicas correctas y evade el aprendizaje de atajos visuales (*Shortcut Learning*), se emplea una comparativa contrafactual pareada:
+> * **Muestra Izquierda (Verdadero Positivo, TP):** Muestra la focalización precisa de los gradientes térmicos sobre la lesión o alteración anatómica real (ej. realce en el contorno cardíaco para cardiomegalias o en las bases pulmonares para derrames).
+> * **Muestra Derecha (Verdadero Negativo, TN):** Ilustra el comportamiento ante un paciente sano. La red explora las regiones de riesgo pero desactiva los mapas térmicos al constatar la normalidad topológica, validando la robustez de la predicción.
+> 
+> ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
 >
 > 🔍 **Auditoría Exhaustiva (14 Patologías):** Para garantizar la interpretabilidad y seguridad del modelo, se ha generado una validación visual completa evaluando el foco de atención topológico de la red frente a todas las etiquetas clínicas del dataset.
 > * 📄 **[Ver Matriz Grad-CAM Completa (14 Patologías)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_completa.png)**
