@@ -4,7 +4,7 @@
 **Autor:** Rafael Carrillo Arroyo
 ---
 
-## 📋 Resumen Ejecutivo
+## 📋 Resumen
 La presente memoria detalla el diseño, desarrollo y evaluación empírica de un *pipeline* multimodal avanzado que integra visión por computador y procesamiento de lenguaje natural (NLP) para la redacción automatizada de informes radiológicos. El sistema aborda y mitiga los desafíos inherentes del **sesgo de normalidad** (*prior* lingüístico) y la **desalineación de dominio** mediante una arquitectura modular dividida en tres fases de ingeniería estricta y auditoría continua.
 
 ---
