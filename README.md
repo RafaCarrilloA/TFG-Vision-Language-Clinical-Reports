@@ -1,156 +1,147 @@
-# 🧠 Vision-Language Model para la Generación Autorregresiva de Informes Radiológicos
+# 🧠 Vision-Language Model for Autoregressive Generation of Radiological Reports
 
-**Proyecto de Fin de Grado en Ingeniería Informática (ETSIIT - Universidad de Granada)**  
-**Autor:** Rafael Carrillo Arroyo
+**Bachelor's Thesis in Computer Engineering (ETSIIT - University of Granada)**  
+**Author:** Rafael Carrillo Arroyo
 ---
 
-## 📋 Resumen
-La presente memoria detalla el diseño, desarrollo y evaluación empírica de un *pipeline* multimodal avanzado que integra visión por computador y procesamiento de lenguaje natural (NLP) para la redacción automatizada de informes radiológicos. El sistema aborda y mitiga los desafíos inherentes del **sesgo de normalidad** (*prior* lingüístico) y la **desalineación de dominio** mediante una arquitectura modular dividida en tres fases de ingeniería estricta y auditoría continua.
+## 📋 Overview
+This thesis details the design, development, and empirical evaluation of an advanced multimodal pipeline that integrates computer vision and natural language processing (NLP) for the automated drafting of radiological reports. The system addresses and mitigates the inherent challenges of **normality bias** (linguistic prior) and **domain misalignment** through a modular architecture divided into three phases of strict engineering and continuous auditing[cite: 1].
 
 ---
 
-## 🏗️ Arquitectura del Sistema: Pipeline de 3 Fases
+## 🏗️ System Architecture: 3-Phase Pipeline
 
-### FASE 1: Codificador Visual Clínico (Extracción de Características Espaciales)
-**Objetivo:** Desarrollar una arquitectura base visual y robusta capaz de codificar la anatomía radiológica preservando la topología espacial, generando así un vocabulario fundacional para el modelo generativo.
+### PHASE 1: Clinical Visual Encoder (Spatial Feature Extraction)
+**Objective:** Develop a robust visual base architecture capable of encoding radiological anatomy while preserving spatial topology, generating a foundational vocabulary for the generative model.
 
-**Estrategia Arquitectónica y de Optimización:**
-* **Backbone Médico:** Adaptación de una red convolucional **DenseNet-121** mediante *Weight Surgery* (transferencia de pesos preentrenados y adaptación a entrada monocanal).
-* **Preservación Topológica:** Sustitución de la capa de *Global Average Pooling* convencional para extraer una **cuadrícula espacial de 10x10** (100 tokens visuales continuos de 1024 canales), aislando regiones anatómicas específicas.
-* **Mitigación del Desbalanceo:** Aprendizaje multietiqueta concurrente (14 patologías) para combatir el desbalanceo extremo (*Long-Tail*) mediante la aplicación de una función de pérdida asimétrica ponderada (BCE + Pos-Weight) y el mapeo de incertidumbre clínica (*Soft Targets*).
+**Architectural and Optimization Strategy:**
+* **Medical Backbone:** Adaptation of a **DenseNet-121** convolutional network through *Weight Surgery* (transfer of pre-trained weights and adaptation to monochromatic input).
+* **Topological Preservation:** Replacement of the conventional *Global Average Pooling* layer to extract a **10x10 spatial grid** (100 continuous visual tokens of 1024 channels), isolating specific anatomical regions.
+* **Imbalance Mitigation:** Concurrent multi-label learning (14 pathologies) to combat extreme imbalance (*Long-Tail*) by applying a weighted asymmetric loss function (BCE + Pos-Weight) and clinical uncertainty mapping (*Soft Targets*).
 
-**Rendimiento Global y Robustez (Cohorte de Test):**
-El modelo demuestra una alta capacidad de separación estadística global, manteniendo la integridad estructural frente a la prevalencia masiva de clases sanas, tal como certifica el análisis del área bajo la curva de precisión-exhaustividad (PR AUC).
-
-<div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_roc_test_finales.png" width="48%" alt="Curva ROC Conjunta Multietiqueta">
-  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_pr_test_finales.png" width="48%" alt="Curva PR Conjunta Multietiqueta">
-</div>
-
-**Rendimiento Neto Clínico (F1-Score):**
-El análisis sobre el conjunto de prueba confirma un rendimiento de grado clínico, exhibiendo su mayor fiabilidad diagnóstica en patologías parenquimatosas sólidas y derrames. 
-
-> ⚠️ **Nota Metodológica sobre Desbalanceo Extremo (Long-Tail):** Las clases *Fracture* y *Lung Lesion* registran un F1-Score afectado por la distribución natural del *dataset*. En *Fracture*, existe una ausencia neta de casos positivos en esta partición de test (soporte estadístico nulo), inhabilitando el cálculo de la métrica integral de precisión (PR AUC = N/A). En *Lung Lesion*, aunque existe soporte clínico residual, su prevalencia es ínfima, resultando en una sensibilidad reducida frente a la clase mayoritaria sana.
+**Global Performance and Robustness (Test Cohort):**
+The model demonstrates high global statistical separation capacity, maintaining structural integrity against the massive prevalence of healthy classes, as certified by the precision-recall area under the curve (PR AUC) analysis.
 
 <div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_1/test/f1_scores_test.png" width="75%" alt="Gráfico de barras F1-Score">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_roc_test_finales.png" width="48%" alt="Joint Multi-label ROC Curve">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/curvas_pr_test_finales.png" width="48%" alt="Joint Multi-label PR Curve">
 </div>
 
-📄 **[Consultar tabla completa de métricas clínicas y umbrales (CSV)](assets/Resultados_Evaluacion/Modulo_1/test/metricas_clinicas_test.csv)**
+**Net Clinical Performance (F1-Score):**
+The analysis on the test set confirms clinical-grade performance, exhibiting its highest diagnostic reliability in solid parenchymal pathologies and effusions. 
 
-> **Explicabilidad Clínica y Auditoría Visual (Grad-CAM):**
+> ⚠️ **Methodological Note on Extreme Imbalance (Long-Tail):** The *Fracture* and *Lung Lesion* classes record an F1-Score affected by the natural distribution of the dataset. In *Fracture*, there is a net absence of positive cases in this test partition (null statistical support), disabling the calculation of the integral precision metric (PR AUC = N/A). In *Lung Lesion*, although there is residual clinical support, its prevalence is minimal, resulting in reduced sensitivity compared to the healthy majority class.
+
+<div align="center">
+  <img src="assets/Resultados_Evaluacion/Modulo_1/test/f1_scores_test.png" width="75%" alt="F1-Score Bar Chart">
+</div>
+
+📄 **[View full clinical metrics and thresholds table (CSV)](assets/Resultados_Evaluacion/Modulo_1/test/metricas_clinicas_test.csv)**
+
+> **Clinical Explainability and Visual Auditing (Grad-CAM):**
 > 
-> Para certificar empíricamente que la red convolucional fundamenta su diagnóstico en las coordenadas anatómicas correctas y evade el aprendizaje de atajos visuales (*Shortcut Learning*), se emplea una comparativa contrafactual pareada:
-> * **Muestra Izquierda (Verdadero Positivo, TP):** Muestra la focalización precisa de los gradientes térmicos sobre la lesión o alteración anatómica real (ej. realce en el contorno cardíaco para cardiomegalias o en las bases pulmonares para derrames).
-> * **Muestra Derecha (Verdadero Negativo, TN):** Ilustra el comportamiento ante un paciente sano. La red explora las regiones de riesgo pero desactiva los mapas térmicos al constatar la normalidad topológica, validando la robustez de la predicción.
+> To empirically certify that the convolutional network grounds its diagnosis on the correct anatomical coordinates and evades *Shortcut Learning*, a paired counterfactual comparison is used:
+> * **Left Sample (True Positive, TP):** Shows the precise focus of thermal gradients on the real lesion or anatomical alteration (e.g., enhancement on the cardiac contour for cardiomegaly or at the lung bases for effusions).
+> * **Right Sample (True Negative, TN):** Illustrates the behavior in a healthy patient. The network explores risk regions but deactivates thermal maps upon verifying topological normality, validating prediction robustness.
 > 
 > ![Showcase Grad-CAM](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_showcase_readme.png)
 >
-> 🔍 **Auditoría Exhaustiva (14 Patologías):** Para garantizar la interpretabilidad y seguridad del modelo, se ha generado una validación visual completa evaluando el foco de atención topológico de la red frente a todas las etiquetas clínicas del dataset.
-> * 📄 **[Ver Matriz Grad-CAM Completa (14 Patologías)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_completa.png)**
+> 🔍 **Exhaustive Auditing (14 Pathologies):** To guarantee the model's interpretability and safety, a complete visual validation was generated, evaluating the network's topological attention focus against all clinical labels in the dataset.
+> * 📄 **[View Complete Grad-CAM Matrix (14 Pathologies)](assets/Resultados_Evaluacion/Modulo_1/test/GradCAM/gradcam_matriz_completa.png)**
 
 ---
 
-### FASE 2: Puente Multimodal y Alineamiento Geométrico
-**Objetivo:** Establecer el nexo de proyección entre el extractor visual y el decodificador de lenguaje (BioGPT). Esta fase opera bajo un protocolo de "Alineamiento Puro": el LLM se mantiene estrictamente congelado, recayendo la responsabilidad de proyectar la semántica visual hacia el espacio sintáctico en un proyector lineal asistido por *Embeddings* Posicionales 2D.
+### PHASE 2: Multimodal Bridge and Geometric Alignment
+**Objective:** Establish the projection nexus between the visual extractor and the language decoder (BioGPT). This phase operates under a "Pure Alignment" protocol: the LLM is kept strictly frozen, shifting the responsibility of projecting visual semantics into the syntactic space onto a linear projector assisted by 2D Positional *Embeddings*.
 
-**Validación Arquitectónica y Estabilidad (Cohorte Test N=380):**
-El diseño del puente multimodal logra estabilizar la inyección visual sin producir saturación en la red receptora.
-* **Inmutabilidad del LLM:** Diferencia máxima absoluta nula (`Max-Diff = 0.00`), garantizando la preservación de los pesos originales de BioGPT.
-* **Estabilidad Energética:** Norma L2 promedio anclada en **32.40**, previniendo la saturación matemática de la capa Softmax.
-* **Mitigación del "Efecto Cono":** Reducción de la similitud coseno centrada a **-0.0004**, garantizando una dispersión isótropa óptima y mitigando la anisotropía inherente de los modelos de lenguaje.
+**Architectural Validation and Stability (Test Cohort N=380):**
+The multimodal bridge design successfully stabilizes the visual injection without causing saturation in the receiving network.
+* **LLM Immutability:** Null maximum absolute difference (`Max-Diff = 0.00`), ensuring the preservation of BioGPT's original weights.
+* **Energetic Stability:** Average L2 norm anchored at **32.40**, preventing mathematical saturation of the Softmax layer.
+* **"Cone Effect" Mitigation:** Reduction of centered cosine similarity to **-0.0004**, ensuring optimal isotropic dispersion and mitigating the inherent anisotropy of language models.
 
-> **Demostración Geométrica de la Coherencia Espacial:**
+> **Geometric Demonstration of Spatial Coherence:**
 > <div align="center">
->   <img src="assets/Resultados_Evaluacion/Modulo_2/post_auditoria_topologica_2d.png" width="60%" alt="Matriz de Afinidad Topológica pos_embeddings">
+>   <img src="assets/Resultados_Evaluacion/Modulo_2/post_auditoria_topologica_2d.png" width="60%" alt="Topological Affinity Matrix pos_embeddings">
 > </div>
 > 
-> *La matriz de afinidad evidencia empíricamente cómo el modelo logra reconstruir la topología bidimensional (2D) a partir de una secuencia plana (1D). Dado que la radiografía se procesa como una cuadrícula de 10x10, la aparición de franjas paralelas a la diagonal principal con un "salto" exacto de 10 posiciones demuestra matemáticamente que la red ha descubierto el eje vertical. De este modo, el proyector interioriza la estructura anatómica sin necesidad de supervisión espacial explícita.*
+> *The affinity matrix empirically shows how the model manages to reconstruct the two-dimensional (2D) topology from a flat (1D) sequence. Since the radiograph is processed as a 10x10 grid, the appearance of stripes parallel to the main diagonal with an exact "jump" of 10 positions mathematically demonstrates that the network has discovered the vertical axis. Thus, the projector internalizes the anatomical structure without the need for explicit spatial supervision.*
 
-**Análisis de Inercia Lingüística y "Ceguera Clínica":**
-A pesar de la correcta alineación geométrica, la evaluación clínica arroja una **Tasa Macro de Captura Patológica crítica del 9.41%**. La conservación inmutable de BioGPT provoca que su fuerte sesgo lingüístico (*prior* de normalidad) eclipse la señal visual, resultando en la generación de informes genéricos de normalidad incluso ante evidencias de lesiones severas.
+**Analysis of Linguistic Inertia and "Clinical Blindness":**
+Despite correct geometric alignment, clinical evaluation yields a critical **Macro Pathological Capture Rate of 9.41%**. The immutable conservation of BioGPT causes its strong linguistic bias (normality *prior*) to eclipse the visual signal, resulting in the generation of generic normality reports even in the presence of severe lesions evidence.
 
-> **⚠️ Ejemplo de Alucinación por Sesgo de Normalidad (Paciente con patologías activas):**
-> * **[INFORME ORIGINAL]:** *"Findings: Right jugular catheter present... Scar / subsegmental atelectasis in the lingula..."*
-> * **[TEXTO GENERADO]:** *"Normal, the heart is unremarkable. Impression is clear, there is no pneumothorax..."*
+> **⚠️ Example of Normality Bias Hallucination (Patient with active pathologies):**
+> * **[ORIGINAL REPORT]:** *"Findings: Right jugular catheter present... Scar / subsegmental atelectasis in the lingula..."*
+> * **[GENERATED TEXT]:** *"Normal, the heart is unremarkable. Impression is clear, there is no pneumothorax..."*
 
-**Veredicto Metodológico:** El alineamiento unimodal de proyección pura resulta insuficiente para quebrar la inercia del modelo de lenguaje. Este hallazgo empírico valida la hipótesis de partida y fundamenta la necesidad de la transición hacia la **FASE 3**, introduciendo adaptación de dominio en el LLM.
+**Methodological Verdict:** Unimodal pure projection alignment is insufficient to break the language model's inertia. This empirical finding validates the starting hypothesis and justifies the transition to **PHASE 3**, introducing domain adaptation into the LLM.
 
 ---
 
-### FASE 3: Adaptación de Dominio y Generación Condicionada (LoRA)
-**Objetivo:** Erradicar el sesgo de normalidad detectado en la fase anterior mediante la inyección de adaptadores de bajo rango (**LoRA**) en las capas de auto-atención de BioGPT-Large. Se aplica un proceso de *Fine-Tuning* Supervisado (SFT) a lo largo de 15 épocas de optimización, consolidando un mínimo de pérdida focal en la época 15 ($\text{Val Focal Loss} = 1.2436$).
+### PHASE 3: Domain Adaptation and Conditioned Generation (LoRA)
+**Objective:** Eradicate the normality bias detected in the previous phase by injecting low-rank adapters (**LoRA**) into the self-attention layers of BioGPT-Large. A Supervised Fine-Tuning (SFT) process is applied over 15 optimization epochs, consolidating a focal loss minimum at epoch 15 ($\text{Val Focal Loss} = 1.2436$).
 
-**Auditoría de Plasticidad Visual y Coherencia Semántica (Cohorte Test N=380):**
-El protocolo de ablación visual (*Blind Masking*) corrobora el éxito de la intervención algorítmica, evidenciando la transición de un modelo lingüísticamente inercial a uno dependiente del estímulo visual.
+**Visual Plasticity and Semantic Coherence Auditing (Test Cohort N=380):**
+The visual ablation protocol (*Blind Masking*) corroborates the success of the algorithmic intervention, evidencing the transition from an inertially linguistic model to one dependent on visual stimuli.
 
-* **Índice de Dependencia Visual (VDI Macro): 0.8145.** Este umbral confirma que el sistema fundamenta más del 81% de su inferencia semántica en la radiografía de entrada.
-* **Calidad Semántica Contextual:** Se obtiene un BERTScore F1 de **0.8780** y una similitud SBERT de **0.6389** (Escala Absoluta), asegurando una sintaxis fluida y consistente con la terminología clínica humana.
+* **Visual Dependency Index (Macro VDI): 0.8145.** This threshold confirms that the system bases over 81% of its semantic inference on the input radiograph.
+* **Contextual Semantic Quality:** A BERTScore F1 of **0.8780** and an SBERT similarity of **0.6389** (Absolute Scale) are obtained, ensuring fluid syntax consistent with human clinical terminology.
 
-📄 **[Consultar tabla de métricas de Lenguaje Natural (BLEU, ROUGE, BERTScore)](assets/Resultados_Evaluacion/Modulo_3/metricas_generacion_nlg.csv)**
+📄 **[View Natural Language Metrics Table (BLEU, ROUGE, BERTScore)](assets/Resultados_Evaluacion/Modulo_3/metricas_generacion_nlg.csv)**
 
-**Rendimiento Diagnóstico Neto (Auditoría Zero-Shot NLP con BART):**
-Para validar la fidelidad clínica de los informes generados, se realizó una extracción automatizada de patologías mediante un modelo externo (BART-Large-MNLI) en configuración *Zero-Shot*, comparando las entidades redactadas por el sistema frente al *Ground Truth*.
+**Net Diagnostic Performance (Zero-Shot NLP Auditing with BART):**
+To validate the clinical fidelity of the generated reports, an automated extraction of pathologies was performed using an external model (BART-Large-MNLI) in *Zero-Shot* configuration, comparing the entities drafted by the system against the *Ground Truth*.
 
-La evaluación global consolida el diagnóstico multietiqueta del texto generado:
-* **F1-Score Micro (57.62% - Convergencia Estable):** Rendimiento neto ajustado al volumen poblacional, demostrando la fiabilidad general del modelo en un entorno clínico.
-* **F1-Score Macro (48.73% - Estándar Académico VLM):** Rendimiento promedio por clase, reflejando el desafío del desbalance extremo en la cohorte.
+Global evaluation consolidates the multi-label diagnosis of the generated text:
+* **Micro F1-Score (57.62% - Stable Convergence):** Net performance adjusted to population volume, demonstrating the model's overall reliability in a clinical setting.
+* **Macro F1-Score (48.73% - Academic VLM Standard):** Average performance per class, reflecting the challenge of extreme imbalance in the cohort.
 
-A nivel de entidades específicas, el modelo exhibe una alta capacidad para documentar alteraciones morfológicas complejas directamente en lenguaje natural:
+At the level of specific entities, the model exhibits a high capacity to document complex morphological alterations directly in natural language:
 
 <div align="center">
-  <img src="assets/Resultados_Evaluacion/Modulo_3/f3_distribucion_casos_nucleus.png" width="75%" alt="F1-Score Clínico de Textos Generados">
+  <img src="assets/Resultados_Evaluacion/Modulo_3/f3_distribucion_casos_nucleus.png" width="75%" alt="Clinical F1-Score of Generated Texts">
 </div>
 
-*Se observan resultados sobresalientes en patologías de alta relevancia clínica como la **Opacidad Pulmonar (F1: 0.7593)**, la **Consolidación (F1: 0.7161)** y la **Atelectasis (F1: 0.7043)**.*
+*Outstanding results are observed in highly relevant clinical pathologies such as **Lung Opacity (F1: 0.7593)**, **Consolidation (F1: 0.7161)**, and **Atelectasis (F1: 0.7043)**.*
 
-**Auditoría Epidemiológica (Distribución Observada vs. Generada):**
-Esta auditoría visualiza el volumen total de diagnósticos por cada categoría patológica. El contraste equilibrado entre ambas barras demuestra la superación definitiva del colapso de inferencia sufrido en la Fase 2. El modelo ahora aproxima con gran precisión la distribución multietiqueta del mundo real, confirmando que redacta de forma proporcional a la evidencia clínica y no por sesgo estadístico.
+**Epidemiological Auditing (Observed vs. Generated Distribution):**
+This audit visualizes the total volume of diagnoses for each pathological category. The balanced contrast between both bars demonstrates the definitive overcoming of the inference collapse suffered in Phase 2. The model now closely approximates the real-world multi-label distribution, confirming that it drafts proportionally to clinical evidence and not due to statistical bias.
 
-📄 **[Consultar reporte detallado de validación clínica cruzada (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
+📄 **[View detailed cross-clinical validation report (CSV)](assets/Resultados_Evaluacion/Modulo_3/metricas_clinicas_bart.csv)**
 
 ---
 
-## 🛠️ Stack Tecnológico y Reproducibilidad
+## 🛠️ Tech Stack and Reproducibility
 
-El *pipeline* ha sido desarrollado e iterado en entornos acelerados por GPU (NVIDIA CUDA), optimizando el uso de VRAM mediante Precisión Mixta Automática (AMP) y acumulación de gradientes.
+The *pipeline* was developed and iterated in GPU-accelerated environments (NVIDIA CUDA), optimizing VRAM usage through Automatic Mixed Precision (AMP) and gradient accumulation.
 
 * **Deep Learning Framework:** PyTorch & PyTorch Lightning.
-* **Preprocesamiento Clínico y Visión:** MONAI (Medical Open Network for AI) para transformaciones de grado médico, y TorchVision (DenseNet-121).
-* **Procesamiento de Lenguaje (NLP):** HuggingFace Transformers (BioGPT, BART, SBERT).
-* **Métricas y Evaluación:** Scikit-Learn, Evaluate, BERTScore.
-* **Manipulación de Datos:** Pandas, NumPy, OpenCV.
+* **Clinical Preprocessing and Vision:** MONAI (Medical Open Network for AI) for medical-grade transformations, and TorchVision (DenseNet-121).
+* **Language Processing (NLP):** HuggingFace Transformers (BioGPT, BART, SBERT).
+* **Metrics and Evaluation:** Scikit-Learn, Evaluate, BERTScore.
+* **Data Manipulation:** Pandas, NumPy, OpenCV.
 
-> **💡 Documentación Metodológica y Código Fuente:**
-> El detalle exhaustivo sobre la definición matemática de las pruebas, el diseño de las funciones de pérdida y la implementación algorítmica de cada fase se encuentra documentado de forma interactiva en la carpeta `notebooks/`.
-
----
-* 📉 **Auditoría de Entrenamiento (Convergencia):** Los gráficos de estabilidad de las funciones de pérdida (*Loss*) están disponibles para la **[Fase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)**, la **[Fase 2 (Puente Multimodal)](assets/Resultados_Evaluacion/Modulo_2/grafica_convergencia_fase2.png)** y la **[Fase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.jpg)**.
+> **💡 Methodological Documentation and Source Code:**
+> The complete source code and experimentation notebooks (`notebooks/`) are temporarily kept private in this repository, pending the formal publication process of the project's results. They will be released publicly at the earliest opportunity.
 
 ---
-## 📂 Recursos y Estructura del Repositorio
+* 📉 **Training Auditing (Convergence):** Stability graphs of the loss functions are available for **[Phase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)**, **[Phase 2 (Multimodal Bridge)](assets/Resultados_Evaluacion/Modulo_2/grafica_convergencia_fase2.png)**, and **[Phase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.jpg)**.
 
-> **⚙️ Estrategia de Ingesta de Datos (Data Ops):**
-> Por buenas prácticas de Ingeniería de Software, los corpus clínicos masivos (imágenes radiológicas) y los tensores de pesos pesados (`.pth`) **no** se incluyen en el control de versiones de GitHub.
-
-🔗 **[Acceso al Volumen Externo en Google Drive (Datasets, Pesos y Logs)](https://drive.google.com/drive/folders/190Xspevq_DuxQ3TelS3kAR5PC_xw6rMz?usp=sharing)**
+---
+## 📂 Repository Resources and Structure
 
 ```text
 TFG-Vision-Language-Clinical-Reports/
-├── notebooks/       # Implementación base, código fuente y experimentación
-│   ├── Modulo_I_Vision.ipynb        # Fase 1: Entrenamiento del extractor visual (CNN) y métricas
-│   └── Modulo_II_Puente_Texto.ipynb # Fases 2 y 3: Proyector MLP, inyección LoRA en BioGPT y auditoría Zero-Shot
+├── assets/          # Comprehensive repository of graphic resources, metrics, and audits
+│   ├── Resultados_EDA/              # Exhaustive Exploratory Data Analysis (EDA)
+│   │   ├── Modulo_1/                # Demographics, photometry, QC, and pathology correlation
+│   │   └── Modulo_2_3_Indiana/      # Clinical bimodal inspection, corpus completeness, and Bigrams
+│   └── Resultados_Evaluacion/       # Empirical tests and algorithmic validation of the 3 phases
+│       ├── Modulo_1/                # [Phase 1] ROC/PR curves, confusion matrices, and Grad-CAM
+│       ├── Modulo_2/                # [Phase 2] Bridge convergence and 2D topology demonstration
+│       └── Modulo_3/                # [Phase 3] NLP Metrics (BERTScore) and evaluation CSVs
 │
-├── assets/          # Repositorio integral de recursos gráficos, métricas y auditorías
-│   ├── Resultados_EDA/              # Análisis Exploratorio de Datos (EDA) exhaustivo
-│   │   ├── Modulo_1/                # Demografía, fotometría, control de calidad y correlación de patologías
-│   │   └── Modulo_2_3_Indiana/      # Inspección bimodal clínica, completitud del corpus y Bigramas (NLP)
-│   └── Resultados_Evaluacion/       # Pruebas empíricas y validación algorítmica de las 3 fases
-│       ├── Modulo_1/                # [Fase 1] Curvas ROC/PR individuales, matrices de confusión y Grad-CAM (14 clases)
-│       ├── Modulo_2/                # [Fase 2] Convergencia del puente y demostración matemática de topología 2D
-│       └── Modulo_3/                # [Fase 3] Métricas NLP (BERTScore), autopsias de contraste y CSVs de evaluación
-│
-├── checkpoints/     # (Ignorado en Git -> Accesible vía enlace Drive) Pesos del modelo
-├── data/            # (Ignorado en Git -> Accesible vía enlace Drive) Montaje dinámico SSD
-├── outputs/         # (Ignorado en Git -> Accesible vía enlace Drive) Registros de ejecución locales
-└── README.md        # Documentación arquitectónica e índice del proyecto
+├── checkpoints/     # (Git Ignored) Local model weights
+├── data/            # (Git Ignored) Dynamic dataset mounts
+├── outputs/         # (Git Ignored) Local execution logs
+└── README.md        # Architectural documentation and project index

@@ -13,3 +13,6 @@ __pycache__/
 
 # Jupyter
 .ipynb_checkpoints/
+
+# Código fuente y experimentación (Oculto temporalmente por publicación)
+notebooks/
