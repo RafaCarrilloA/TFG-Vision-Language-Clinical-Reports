@@ -128,11 +128,11 @@ The *pipeline* was developed and iterated in GPU-accelerated environments (NVIDI
 * 📉 **Training Auditing (Convergence):** Stability graphs of the loss functions are available for **[Phase 1 (CNN)](assets/Resultados_Evaluacion/Modulo_1/curvas_entrenamiento_final.png)**, **[Phase 2 (Multimodal Bridge)](assets/Resultados_Evaluacion/Modulo_2/grafica_convergencia_fase2.png)**, and **[Phase 3 (LoRA)](assets/Resultados_Evaluacion/Modulo_3/convergencia_fase3_lora.jpg)**.
 
 ---
-## 📂 Repository Resources and Structure
+### 📂 Repository Structure
 
 ```text
 TFG-Vision-Language-Clinical-Reports/
-├── assets/          # Comprehensive repository of graphic resources, metrics, and audits
+├── assets/                  # Comprehensive repository of graphic resources, metrics, and audits
 │   ├── Resultados_EDA/              # Exhaustive Exploratory Data Analysis (EDA)
 │   │   ├── Modulo_1/                # Demographics, photometry, QC, and pathology correlation
 │   │   └── Modulo_2_3_Indiana/      # Clinical bimodal inspection, corpus completeness, and Bigrams
@@ -141,7 +141,11 @@ TFG-Vision-Language-Clinical-Reports/
 │       ├── Modulo_2/                # [Phase 2] Bridge convergence and 2D topology demonstration
 │       └── Modulo_3/                # [Phase 3] NLP Metrics (BERTScore) and evaluation CSVs
 │
-├── checkpoints/     # (Git Ignored) Local model weights
-├── data/            # (Git Ignored) Dynamic dataset mounts
-├── outputs/         # (Git Ignored) Local execution logs
-└── README.md        # Architectural documentation and project index
+├── notebooks/               # Interactive Jupyter Notebooks pipeline
+│   ├── Modulo_I_Vision.ipynb        # Vision Encoder pipeline (DenseNet121, Grad-CAM & Feature Extraction)
+│   └── Modulo_II_Puente_Texto.ipynb # Multimodal Bridge alignment & BioGPT + LoRA fine-tuning
+│
+├── checkpoints/             # (Git Ignored) Local model weights
+├── data/                    # (Git Ignored) Dynamic dataset mounts
+├── outputs/                 # (Git Ignored) Local execution logs
+└── README.md                # Architectural documentation and project index
